@@ -20,7 +20,9 @@ exports.create_transaction = function(req, res) {
   var to_acc   = req.body.to_acc;
   var amount   = req.body.amount;
 
-  if (accountExist(from_acc)) {
+  var check = accountExist(req, res);
+  console.log(check);
+  if (check) {
     console.log('it is true');
   } else {
     console.log('it is false');
@@ -46,11 +48,19 @@ function accountsExist(from_acc, to_acc) {
   });
 };
 
-function accountExist(acc) {
-  User.findById(acc).exec()
-    .then(function(user) {
-      console.log(user);
-      console.log('im hererineirneinrienrien');
+var accountExist = function(req, res) {
+  User.findById(req.body.from_acc, function(err, user) {
+    if (err) {
+      console.log('something wrong');
+      return false;
+    }
+    console.log(user);
+    if (!user) {
+      console.log('user not found');
+      return false;
+    } else {
+      console.log('found user')
       return true;
-    });
+    }
+  });
 }
